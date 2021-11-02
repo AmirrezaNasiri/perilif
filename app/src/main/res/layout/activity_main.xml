@@ -6,22 +6,85 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <View
+        android:id="@+id/pad_a_view"
+        android:layout_width="124dp"
+        android:layout_height="165dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:background="#F6F6F6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <ProgressBar
+        android:id="@+id/pad_a_powerbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="43dp"
+        android:layout_height="87dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:rotation="-90"
+        app:layout_constraintBottom_toBottomOf="@+id/pad_a_view"
+        app:layout_constraintStart_toStartOf="@+id/pad_a_view" />
+
     <Button
-        android:id="@+id/relay"
+        android:id="@+id/pad_a_increase"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="45dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTintMode="add"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="2dp"
+        android:text="🔥"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/pad_a_decrease"
+        app:layout_constraintEnd_toEndOf="@+id/pad_a_view" />
+
+    <Button
+        android:id="@+id/pad_a_decrease"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="45dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTintMode="add"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="2dp"
+        android:text="❄"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/pad_a_view"
+        app:layout_constraintEnd_toEndOf="@+id/pad_a_view" />
+
+    <TextView
+        android:id="@+id/pad_a_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="88dp"
-        android:layout_marginBottom="88dp"
-        android:text="@string/relay"
-        app:layout_constraintBottom_toTopOf="@+id/switchlight"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginTop="8dp"
+        android:text="Pad A"
+        app:layout_constraintEnd_toEndOf="@+id/pad_a_view"
+        app:layout_constraintStart_toStartOf="@+id/pad_a_view"
+        app:layout_constraintTop_toTopOf="@+id/pad_a_view" />
+
+    <TextView
+        android:id="@+id/pad_a_powerbar_text"
+        android:layout_width="43dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/pad_a_powerbar"
+        app:layout_constraintStart_toStartOf="@+id/pad_a_powerbar" />
 
     <TextView
         android:id="@+id/logs"
         android:layout_width="0dp"
         android:layout_height="120dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
         android:gravity="bottom"
         android:maxLines="3"
@@ -32,28 +95,18 @@
 
     <Button
         android:id="@+id/copy_logs"
-        android:layout_width="94dp"
-        android:layout_height="51dp"
-        android:layout_marginEnd="16dp"
-        android:text="Copy"
+        android:layout_width="45dp"
+        android:layout_height="54dp"
+        android:layout_marginEnd="8dp"
+        android:text="📎"
         app:layout_constraintBottom_toTopOf="@+id/logs"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/switchlight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
-        android:layout_marginBottom="64dp"
-        android:text="@string/light"
-        app:layout_constraintBottom_toTopOf="@+id/powerbar_text"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/powerbar_text"
         android:layout_width="124dp"
         android:layout_height="36dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toTopOf="@+id/powerbar"
         app:layout_constraintStart_toStartOf="parent" />
@@ -63,7 +116,7 @@
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
         android:layout_width="124dp"
         android:layout_height="34dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:indeterminate="false"
         android:max="100"
         android:progress="0"
@@ -71,14 +124,183 @@
         app:layout_constraintBottom_toTopOf="@+id/logs"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <View
+        android:id="@+id/pad_b_view"
+        android:layout_width="124dp"
+        android:layout_height="165dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:background="#F6F6F6"
+        app:layout_constraintEnd_toStartOf="@+id/pad_c_view"
+        app:layout_constraintStart_toEndOf="@+id/pad_a_view"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <TextView
+        android:id="@+id/pad_b_powerbar_text"
+        android:layout_width="43dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/pad_b_powerbar"
+        app:layout_constraintStart_toStartOf="@+id/pad_b_view" />
+
+    <Button
+        android:id="@+id/pad_b_increase"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="45dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTintMode="add"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="2dp"
+        android:text="🔥"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/pad_c_decrease"
+        app:layout_constraintEnd_toEndOf="@+id/pad_b_view" />
+
+    <Button
+        android:id="@+id/pad_b_decrease"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="45dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTintMode="add"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="2dp"
+        android:text="❄"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/pad_b_view"
+        app:layout_constraintEnd_toEndOf="@+id/pad_b_view" />
+
+    <ProgressBar
+        android:id="@+id/pad_b_powerbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="43dp"
+        android:layout_height="87dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:rotation="-90"
+        app:layout_constraintBottom_toBottomOf="@+id/pad_b_view"
+        app:layout_constraintStart_toStartOf="@+id/pad_b_view" />
+
+    <TextView
+        android:id="@+id/pad_b_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Pad B"
+        app:layout_constraintEnd_toEndOf="@+id/pad_b_view"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="@+id/pad_b_view"
+        app:layout_constraintTop_toTopOf="@+id/pad_b_view" />
+
+    <View
+        android:id="@+id/pad_c_view"
+        android:layout_width="124dp"
+        android:layout_height="165dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:background="#F6F6F6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <Button
+        android:id="@+id/pad_c_increase"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="45dp"
+        android:layout_height="60dp"
+        android:backgroundTintMode="add"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="2dp"
+        android:text="🔥"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/pad_c_decrease"
+        app:layout_constraintEnd_toEndOf="@+id/pad_c_view" />
+
+    <ProgressBar
+        android:id="@+id/pad_c_powerbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="43dp"
+        android:layout_height="87dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:rotation="-90"
+        app:layout_constraintBottom_toBottomOf="@+id/pad_c_view"
+        app:layout_constraintStart_toStartOf="@+id/pad_c_view" />
+
+    <TextView
+        android:id="@+id/pad_c_powerbar_text"
+        android:layout_width="43dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/pad_c_powerbar"
+        app:layout_constraintStart_toStartOf="@+id/pad_c_view" />
+
+    <Button
+        android:id="@+id/pad_c_decrease"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="45dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTintMode="add"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="2dp"
+        android:text="❄"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/pad_c_view"
+        app:layout_constraintEnd_toEndOf="@+id/pad_c_view" />
+
+    <TextView
+        android:id="@+id/pad_c_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Pad C"
+        app:layout_constraintEnd_toEndOf="@+id/pad_c_view"
+        app:layout_constraintHorizontal_bias="0.482"
+        app:layout_constraintStart_toStartOf="@+id/pad_c_view"
+        app:layout_constraintTop_toTopOf="@+id/pad_c_view" />
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    <Switch
+        android:id="@+id/switch_turbo"
+        android:layout_width="87dp"
+        android:layout_height="39dp"
+        android:text="Turbo"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="321dp" />
+
+    <ProgressBar
+        android:id="@+id/command_loadingbar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/logs"
+        tools:layout_editor_absoluteX="181dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
