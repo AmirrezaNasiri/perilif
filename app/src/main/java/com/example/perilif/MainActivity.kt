@@ -17,9 +17,6 @@ import java.io.IOException
 import java.util.*
 import org.json.JSONObject
 
-
-
-
 class MainActivity : AppCompatActivity() {
     val MODULE_MAC = "00:18:E5:04:BF:63"
     val REQUEST_ENABLE_BT = 1
@@ -39,13 +36,10 @@ class MainActivity : AppCompatActivity() {
 
     private val logger: Logger = Logger(this@MainActivity)
     private val toast: Toast = Toast(this@MainActivity)
-
-    private var maxCurrent: Int = 0;
-    private var lastCurrent: Int = 0;
+    private val device: Device = Device(this@MainActivity)
 
     /*private var device = mapOf("maxCurrent" to 0, "lastCurrent" to 0, "turbo" to false)
     private var padA = mapOf("maxCurrent" to 0, "lastCurrent" to 0, "")*/
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -154,9 +148,9 @@ class MainActivity : AppCompatActivity() {
                         val type = data.getString("_t")
 
                         if (type === "ir") {
-                            maxCurrent = data.getInt("pmc");
+                            device.setCurrent(data.getInt("pmc"))
                         } else if (type === "pr") {
-                            // lastCurrent = data.getInt("c");
+                            device.setCurrent(data.getInt("c"))
                         }
 
                         logger.log("<<", txt)

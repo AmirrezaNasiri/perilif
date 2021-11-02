@@ -5,7 +5,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 
-
 class Logger(private var context: MainActivity) {
     fun log(tag: String, message: String) {
         findLogsTv().setText(
