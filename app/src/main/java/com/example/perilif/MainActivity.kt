@@ -12,10 +12,13 @@ import android.os.Message
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import java.io.IOException
 import java.util.*
+import org.json.JSONObject
+
+
+
 
 class MainActivity : AppCompatActivity() {
     val MODULE_MAC = "00:18:E5:04:BF:63"
@@ -26,23 +29,41 @@ class MainActivity : AppCompatActivity() {
     var mmSocket: BluetoothSocket? = null
     var mmDevice: BluetoothDevice? = null
     var btt: ConnectedThread? = null
-    var switchLight: Button? = null
-    var switchRelay: Button? = null
-    var response: TextView? = null
+    private var btnCopyLogs: Button? = null
+    private var switchLight: Button? = null
+    private var switchRelay: Button? = null
+
     var lightflag = false
     var relayFlag = true
     var mHandler: Handler? = null
 
+    private val logger: Logger = Logger(this@MainActivity)
+    private val toast: Toast = Toast(this@MainActivity)
+
+    private var maxCurrent: Int = 0;
+    private var lastCurrent: Int = 0;
+
+    /*private var device = mapOf("maxCurrent" to 0, "lastCurrent" to 0, "turbo" to false)
+    private var padA = mapOf("maxCurrent" to 0, "lastCurrent" to 0, "")*/
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val toolbar: Toolbar = findViewById<Toolbar>(R.id.toolbar)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        btnCopyLogs = findViewById(R.id.copy_logs)
+        switchLight = findViewById(R.id.switchlight)
+        switchRelay = findViewById(R.id.relay)
+
         Log.i("[BLUETOOTH]", "Creating listeners")
-        response = findViewById(R.id.response) as TextView
-        switchRelay = findViewById(R.id.relay) as Button
-        switchLight = findViewById(R.id.switchlight) as Button
-        switchLight!!.setOnClickListener {
+
+        btnCopyLogs?.setOnClickListener {
+            logger.copy()
+        }
+
+        switchLight?.setOnClickListener {
             Log.i("[BLUETOOTH]", "Attempting to send data")
             if (mmSocket!!.isConnected && btt != null) { //if we have connection to the bluetoothmodule
                 lightflag = if (!lightflag) {
@@ -55,7 +76,7 @@ class MainActivity : AppCompatActivity() {
                     false
                 }
             } else {
-                Toast.makeText(this@MainActivity, "Something went wrong", Toast.LENGTH_LONG).show()
+                toast.show("Something went wrong!")
             }
         }
         switchRelay?.setOnClickListener {
@@ -82,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                     runOnUiThread { switchRelay?.setEnabled(true) }
                 }).start()
             } else {
-                Toast.makeText(this@MainActivity, "Something went wrong", Toast.LENGTH_LONG).show()
+                toast.show("Something went wrong!")
             }
         }
         bta = BluetoothAdapter.getDefaultAdapter()
@@ -129,17 +150,16 @@ class MainActivity : AppCompatActivity() {
                     //super.handleMessage(msg);
                     if (msg.what == ConnectedThread.RESPONSE_MESSAGE) {
                         val txt = msg.obj as String
-                        if (response!!.text.toString().length >= 30) {
-                            response!!.text = ""
-                            response!!.append(txt)
-                        } else {
-                            response!!.append(
-                                """
-                                
-                                $txt
-                                """.trimIndent()
-                            )
+                        val data = JSONObject(txt)
+                        val type = data.getString("_t")
+
+                        if (type === "ir") {
+                            maxCurrent = data.getInt("pmc");
+                        } else if (type === "pr") {
+                            // lastCurrent = data.getInt("c");
                         }
+
+                        logger.log("<<", txt)
                     }
                 }
             }
