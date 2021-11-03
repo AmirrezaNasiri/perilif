@@ -12,9 +12,7 @@ import android.text.method.ScrollingMovementMethod
 class Logger(private var context: MainActivity) {
     fun log(tag: String, message: String) {
         findLogsTv().text =
-            (findLogsTv().text.toString() + "$tag $message\n").split("\n").takeLast(200).joinToString("\n")
-        findLogsTv().movementMethod = ScrollingMovementMethod()
-
+            ("$tag $message\n" + findLogsTv().text.toString()).split("\n").take(200).joinToString("\n")
     }
 
     fun copy() {

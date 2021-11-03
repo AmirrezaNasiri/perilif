@@ -8,7 +8,7 @@
 
     <View
         android:id="@+id/pad_a_view"
-        android:layout_width="124dp"
+        android:layout_width="106dp"
         android:layout_height="165dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
@@ -76,6 +76,7 @@
         android:id="@+id/pad_a_powerbar_text"
         android:layout_width="43dp"
         android:layout_height="30dp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/pad_a_powerbar"
         app:layout_constraintStart_toStartOf="@+id/pad_a_powerbar" />
 
@@ -95,10 +96,14 @@
 
     <Button
         android:id="@+id/copy_logs"
-        android:layout_width="45dp"
-        android:layout_height="54dp"
+        android:layout_width="27dp"
+        android:layout_height="38dp"
         android:layout_marginEnd="8dp"
-        android:text="📎"
+        android:paddingLeft="2dp"
+        android:paddingTop="2dp"
+        android:paddingRight="2dp"
+        android:paddingBottom="2dp"
+        android:text="📃"
         app:layout_constraintBottom_toTopOf="@+id/logs"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -126,7 +131,7 @@
 
     <View
         android:id="@+id/pad_b_view"
-        android:layout_width="124dp"
+        android:layout_width="106dp"
         android:layout_height="165dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
@@ -141,6 +146,7 @@
         android:layout_width="43dp"
         android:layout_height="28dp"
         android:layout_marginStart="8dp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/pad_b_powerbar"
         app:layout_constraintStart_toStartOf="@+id/pad_b_view" />
 
@@ -203,8 +209,8 @@
 
     <View
         android:id="@+id/pad_c_view"
-        android:layout_width="124dp"
-        android:layout_height="165dp"
+        android:layout_width="106dp"
+        android:layout_height="162dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:background="#F6F6F6"
@@ -216,6 +222,7 @@
         style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="45dp"
         android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
         android:backgroundTintMode="add"
         android:paddingLeft="8dp"
         android:paddingTop="2dp"
@@ -243,6 +250,7 @@
         android:layout_width="43dp"
         android:layout_height="28dp"
         android:layout_marginStart="8dp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/pad_c_powerbar"
         app:layout_constraintStart_toStartOf="@+id/pad_c_view" />
 
@@ -251,6 +259,7 @@
         style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="45dp"
         android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:backgroundTintMode="add"
         android:paddingLeft="8dp"
@@ -285,9 +294,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch_turbo"
-        android:layout_width="121dp"
+        android:layout_width="93dp"
         android:layout_height="44dp"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
@@ -300,9 +309,10 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="4dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/logs"
-        tools:layout_editor_absoluteX="181dp" />
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

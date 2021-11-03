@@ -11,27 +11,27 @@ import android.os.Looper
 import android.os.Message
 import android.util.Log
 import android.widget.Button
-import android.widget.Switch
 import androidx.appcompat.widget.Toolbar
 import kotlinx.coroutines.FlowPreview
 import java.io.IOException
 import java.util.*
 import org.json.JSONObject
+import androidx.appcompat.widget.SwitchCompat
+
 
 class MainActivity : AppCompatActivity() {
     private val moduleMac = "00:18:E5:04:BF:63"
     private val requestEnableBluetooth = 1
     private val myUuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb")
 
-    private var bta: BluetoothAdapter? = null
+    private var bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
     private var mmSocket: BluetoothSocket? = null
     private var mmDevice: BluetoothDevice? = null
     var btt: ConnectedThread? = null
-    private var btnCopyLogs: Button? = null
     private var mHandler: Handler? = null
-    var swTurbo: Switch? = null
+    var swTurbo: SwitchCompat? = null
 
-    private val commander = Controller(this@MainActivity)
+    private val commander = Commander(this@MainActivity)
     val logger = Logger(this@MainActivity)
     val toast = Toast(this@MainActivity)
     val device = Device(this@MainActivity)
@@ -48,11 +48,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        btnCopyLogs = findViewById(R.id.copy_logs)
 
         Log.i("[BLUETOOTH]", "Creating listeners")
 
-        btnCopyLogs?.setOnClickListener {
+        findViewById<Button>(R.id.copy_logs).setOnClickListener {
             logger.copy()
         }
 
@@ -76,10 +75,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        bta = BluetoothAdapter.getDefaultAdapter()
+        findViewById<SwitchCompat>(R.id.switch_turbo).setOnCheckedChangeListener {buttonView, isChecked ->
+            if (isChecked) {
+                commander.enableTurbo()
+            } else {
+                commander.disableTurbo()
+            }
+        }
 
         //if bluetooth is not enabled then create Intent for user to turn it on
-        if (!bta!!.isEnabled) {
+        if (!bluetoothAdapter.isEnabled) {
             val enableBTIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(enableBTIntent, requestEnableBluetooth)
         } else {
@@ -97,17 +102,18 @@ class MainActivity : AppCompatActivity() {
 
     @FlowPreview
     fun initiateBluetoothProcess() {
-        if (bta!!.isEnabled) {
+        if (bluetoothAdapter.isEnabled) {
 
             //attempt to connect to bluetooth module
             val tmp: BluetoothSocket?
-            mmDevice = bta!!.getRemoteDevice(moduleMac)
+            mmDevice = bluetoothAdapter.getRemoteDevice(moduleMac)
 
             //create socket
             try {
                 tmp = mmDevice?.createRfcommSocketToServiceRecord(myUuid)
                 mmSocket = tmp
                 mmSocket?.connect()
+
                 Log.i("[BLUETOOTH]", "Connected to: " + mmDevice?.name)
             } catch (e: IOException) {
                 try {
@@ -122,30 +128,34 @@ class MainActivity : AppCompatActivity() {
                     //super.handleMessage(msg);
                     if (msg.what == ConnectedThread.RESPONSE_MESSAGE) {
                         val txt = msg.obj as String
+                        logger.log("<<", txt)
                         val data = JSONObject(txt)
-                        val type = data.getString("_t")
 
-                        when {
-                            type === "ir" -> {
+                        when (data.getString("_t")) {
+                            "ir" -> {
                                 device.setCurrent(data.getInt("pmc"))
                             }
-                            type === "pr" -> {
+                            "pr" -> {
                                 device.setCurrent(data.getInt("c"))
-                                pads.forEach { (name: String, pad: Pad) -> pad.setCycle(data.getInt("p${name}c"))
+                                pads.forEach {
+                                    (name: String, pad: Pad) -> pad.setCycle(data.getInt("p${name}c"))
+                                }
+                                if (!commander.isBusy){
+                                   pads.forEach { it.value.syncTargetCycle() }
                                 }
                             }
-                            type === "btn" -> {
-                                commander.toggleTurbo()
-                            }
                         }
-
-                        logger.log("<<", txt)
                     }
                 }
             }
+
             Log.i("[BLUETOOTH]", "Creating and running Thread")
             btt = ConnectedThread(mmSocket!!, mHandler!!)
             btt!!.start()
+
+            if (isBluetoothReady()) {
+                commander.realUpdateCycles(80)
+            }
         }
     }
 

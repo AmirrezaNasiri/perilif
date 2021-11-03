@@ -1,5 +1,6 @@
 package com.example.perilif
 
+import android.util.Log
 import android.widget.TextView
 import android.widget.Button
 import android.widget.ProgressBar
@@ -10,12 +11,24 @@ class Pad(
     ) {
     private var currentCycle: Int = 0
     var targetCycle: Int = 0
+    var oldTargetCycle: Int = 0
 
     fun setCycle(cycle: Int) {
         currentCycle = cycle
-        targetCycle = currentCycle
 
         render()
+    }
+
+    fun syncTargetCycle() {
+        targetCycle = currentCycle
+    }
+
+    fun pauseTargetCycle() {
+        oldTargetCycle = targetCycle
+    }
+
+    fun resumeTargetCycle() {
+        targetCycle = oldTargetCycle
     }
 
     fun increaseTargetCycle() {
@@ -46,6 +59,7 @@ class Pad(
         val caption = "%$currentCycle"
 
         bar.progress = currentCycle
+
         Helper.changeProgressBarColor(bar, context)
 
         label.text = caption
