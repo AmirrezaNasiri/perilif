@@ -1,16 +1,12 @@
 package com.example.perilif
 
-import android.widget.TextView
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 
 
-class Helper() {
+class Helper {
     companion object{
         fun  changeProgressBarColor(bar: ProgressBar, context: AppCompatActivity) {
             var color = R.color.teal_200
@@ -21,9 +17,9 @@ class Helper() {
                 color = R.color.colorAccent
             }
 
-            val progressDrawable: Drawable = bar.getProgressDrawable().mutate()
-            progressDrawable.setColorFilter(context.getResources().getColor(color), PorterDuff.Mode.SRC_IN)
-            bar.setProgressDrawable(progressDrawable)
+            val progressDrawable: Drawable = bar.progressDrawable.mutate()
+            progressDrawable.setColorFilter(context.resources.getColor(color), PorterDuff.Mode.SRC_IN)
+            bar.progressDrawable = progressDrawable
         }
     }
 }

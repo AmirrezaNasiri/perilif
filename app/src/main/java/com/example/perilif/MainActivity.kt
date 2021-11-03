@@ -11,45 +11,44 @@ import android.os.Looper
 import android.os.Message
 import android.util.Log
 import android.widget.Button
-import android.widget.TextView
+import android.widget.Switch
 import androidx.appcompat.widget.Toolbar
+import kotlinx.coroutines.FlowPreview
 import java.io.IOException
 import java.util.*
 import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
-    val MODULE_MAC = "00:18:E5:04:BF:63"
-    val REQUEST_ENABLE_BT = 1
-    private val MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb")
+    private val moduleMac = "00:18:E5:04:BF:63"
+    private val requestEnableBluetooth = 1
+    private val myUuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb")
 
-    var bta: BluetoothAdapter? = null
-    var mmSocket: BluetoothSocket? = null
-    var mmDevice: BluetoothDevice? = null
+    private var bta: BluetoothAdapter? = null
+    private var mmSocket: BluetoothSocket? = null
+    private var mmDevice: BluetoothDevice? = null
     var btt: ConnectedThread? = null
     private var btnCopyLogs: Button? = null
-    private var switchLight: Button? = null
-    private var switchRelay: Button? = null
+    private var mHandler: Handler? = null
+    var swTurbo: Switch? = null
 
-    var lightflag = false
-    var relayFlag = true
-    var mHandler: Handler? = null
+    private val commander = Controller(this@MainActivity)
+    val logger = Logger(this@MainActivity)
+    val toast = Toast(this@MainActivity)
+    val device = Device(this@MainActivity)
 
-    private val logger: Logger = Logger(this@MainActivity)
-    private val toast: Toast = Toast(this@MainActivity)
-    private val device: Device = Device(this@MainActivity)
+    var pads = mapOf(
+        "a" to Pad(this@MainActivity, "a"),
+        "b" to Pad(this@MainActivity, "b"),
+        "c" to Pad(this@MainActivity, "c"),
+    )
 
-    /*private var device = mapOf("maxCurrent" to 0, "lastCurrent" to 0, "turbo" to false)
-    private var padA = mapOf("maxCurrent" to 0, "lastCurrent" to 0, "")*/
-
+    @FlowPreview
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-
         btnCopyLogs = findViewById(R.id.copy_logs)
-        switchLight = findViewById(R.id.switchlight)
-        switchRelay = findViewById(R.id.relay)
 
         Log.i("[BLUETOOTH]", "Creating listeners")
 
@@ -57,80 +56,59 @@ class MainActivity : AppCompatActivity() {
             logger.copy()
         }
 
-        switchLight?.setOnClickListener {
-            Log.i("[BLUETOOTH]", "Attempting to send data")
-            if (mmSocket!!.isConnected && btt != null) { //if we have connection to the bluetoothmodule
-                lightflag = if (!lightflag) {
-                    val sendtxt = "LY"
-                    btt!!.write(sendtxt.toByteArray())
-                    true
-                } else {
-                    val sendtxt = "LN"
-                    btt!!.write(sendtxt.toByteArray())
-                    false
-                }
-            } else {
-                toast.show("Something went wrong!")
-            }
-        }
-        switchRelay?.setOnClickListener {
-            Log.i("[BLUETOOTH]", "Attempting to send data")
-            if (mmSocket!!.isConnected && btt != null) { //if we have connection to the bluetoothmodule
-                relayFlag = if (relayFlag) {
-                    val sendtxt = "RY"
-                    btt!!.write(sendtxt.toByteArray())
-                    false
-                } else {
-                    val sendtxt = "RN"
-                    btt!!.write(sendtxt.toByteArray())
-                    true
-                }
+        pads.forEach {
+            val pad = it.value
 
-                //disable the button and wait for 4 seconds to enable it again
-                switchRelay?.setEnabled(false)
-                Thread(Runnable {
-                    try {
-                        Thread.sleep(4000)
-                    } catch (e: InterruptedException) {
-                        return@Runnable
-                    }
-                    runOnUiThread { switchRelay?.setEnabled(true) }
-                }).start()
-            } else {
-                toast.show("Something went wrong!")
+            pad.findViewBySuffix<Button>("increase").setOnClickListener {
+                pad.increaseTargetCycle()
+
+                if (isBluetoothReady()) {
+                    commander.updateCycles()
+                }
+            }
+
+            pad.findViewBySuffix<Button>("decrease").setOnClickListener {
+                pad.decreaseTargetCycle()
+
+                if (isBluetoothReady()) {
+                    commander.updateCycles()
+                }
             }
         }
+
         bta = BluetoothAdapter.getDefaultAdapter()
 
         //if bluetooth is not enabled then create Intent for user to turn it on
-        if (!bta!!.isEnabled()) {
+        if (!bta!!.isEnabled) {
             val enableBTIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBTIntent, REQUEST_ENABLE_BT)
+            startActivityForResult(enableBTIntent, requestEnableBluetooth)
         } else {
             initiateBluetoothProcess()
         }
     }
 
+    @FlowPreview
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == REQUEST_ENABLE_BT) {
+        if (resultCode == RESULT_OK && requestCode == requestEnableBluetooth) {
             initiateBluetoothProcess()
         }
     }
 
+    @FlowPreview
     fun initiateBluetoothProcess() {
         if (bta!!.isEnabled) {
 
             //attempt to connect to bluetooth module
             val tmp: BluetoothSocket?
-            mmDevice = bta!!.getRemoteDevice(MODULE_MAC)
+            mmDevice = bta!!.getRemoteDevice(moduleMac)
 
             //create socket
             try {
-                tmp = mmDevice?.createRfcommSocketToServiceRecord(MY_UUID)
+                tmp = mmDevice?.createRfcommSocketToServiceRecord(myUuid)
                 mmSocket = tmp
                 mmSocket?.connect()
-                Log.i("[BLUETOOTH]", "Connected to: " + mmDevice?.getName())
+                Log.i("[BLUETOOTH]", "Connected to: " + mmDevice?.name)
             } catch (e: IOException) {
                 try {
                     mmSocket!!.close()
@@ -147,10 +125,18 @@ class MainActivity : AppCompatActivity() {
                         val data = JSONObject(txt)
                         val type = data.getString("_t")
 
-                        if (type === "ir") {
-                            device.setCurrent(data.getInt("pmc"))
-                        } else if (type === "pr") {
-                            device.setCurrent(data.getInt("c"))
+                        when {
+                            type === "ir" -> {
+                                device.setCurrent(data.getInt("pmc"))
+                            }
+                            type === "pr" -> {
+                                device.setCurrent(data.getInt("c"))
+                                pads.forEach { (name: String, pad: Pad) -> pad.setCycle(data.getInt("p${name}c"))
+                                }
+                            }
+                            type === "btn" -> {
+                                commander.toggleTurbo()
+                            }
                         }
 
                         logger.log("<<", txt)
@@ -161,5 +147,9 @@ class MainActivity : AppCompatActivity() {
             btt = ConnectedThread(mmSocket!!, mHandler!!)
             btt!!.start()
         }
+    }
+
+    private fun isBluetoothReady(): Boolean {
+        return mmSocket!!.isConnected && btt != null
     }
 }

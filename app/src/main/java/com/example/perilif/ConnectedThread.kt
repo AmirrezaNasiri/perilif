@@ -6,10 +6,10 @@ import android.os.Message
 import android.util.Log
 import java.io.*
 
-class ConnectedThread(private val mmSocket: BluetoothSocket, uih: Handler) : Thread() {
+class ConnectedThread(mmSocket: BluetoothSocket, uih: Handler) : Thread() {
     private val mmInStream: InputStream?
     private val mmOutStream: OutputStream?
-    var uih: Handler
+    private var uih: Handler
     override fun run() {
         //byte[] buffer = new byte[1024];
         //int bytes;
@@ -35,13 +35,6 @@ class ConnectedThread(private val mmSocket: BluetoothSocket, uih: Handler) : Thr
         try {
             Log.i("[THREAD-CT]", "Writting bytes")
             mmOutStream!!.write(bytes)
-        } catch (e: IOException) {
-        }
-    }
-
-    fun cancel() {
-        try {
-            mmSocket.close()
         } catch (e: IOException) {
         }
     }

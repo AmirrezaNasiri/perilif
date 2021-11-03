@@ -1,9 +1,5 @@
 package com.example.perilif
 
-import android.widget.TextView
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.widget.Toast
 
 class Toast(private var context: MainActivity) {
