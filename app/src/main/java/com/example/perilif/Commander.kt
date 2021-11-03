@@ -54,7 +54,7 @@ class Commander(private var context: MainActivity) {
 
         Handler(Looper.getMainLooper()).postDelayed({
             uncheckTurboControl()
-        }, 10_000L)
+        }, 60_000)
 
         enableTurboControl()
         context.toast.show("Turbo enabled. 🔥ing up ...")
