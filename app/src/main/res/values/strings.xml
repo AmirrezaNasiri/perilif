@@ -1,7 +1,3 @@
 <resources>
-    <string name="app_name">Perilif</string>
-    <string name="title_activity_main">Perilif</string>
-    <string name="relay">Relay</string>
-    <string name="light">Light</string>
-    <string name="textview">TextView</string>
+    <string name="app_name">Masmasak</string>
 </resources>
