@@ -30,11 +30,10 @@ class MainActivity : AppCompatActivity() {
     private val myUuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb")
 
     private var bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-    private var mmSocket: BluetoothSocket? = null
-    private var mmDevice: BluetoothDevice? = null
-    var btt: ConnectedThread? = null
-    private var mHandler: Handler? = null
-    var swTurbo: SwitchCompat? = null
+    private var bluetoothSocket: BluetoothSocket? = null
+    private var bluetoothDevice: BluetoothDevice? = null
+    var bluetoothThread: BluetoothThread? = null
+    private var bluetoothHandler: Handler? = null
 
     private val commander = Commander(this@MainActivity)
     val logger = Logger(this@MainActivity)
@@ -54,12 +53,12 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        Log.i("[BLUETOOTH]", "Creating listeners")
-
+        // Handle the copy button
         findViewById<Button>(R.id.copy_logs).setOnClickListener {
             logger.copy()
         }
 
+        // Handle the pads' control
         pads.forEach {
             val pad = it.value
 
@@ -80,7 +79,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<SwitchCompat>(R.id.switch_turbo).setOnCheckedChangeListener {buttonView, isChecked ->
+        // Handle the turbo switch control
+        findViewById<SwitchCompat>(R.id.switch_turbo).setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 commander.enableTurbo()
             } else {
@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         scaleDown.repeatMode = ObjectAnimator.REVERSE
         scaleDown.start()
 
-        //if bluetooth is not enabled then create Intent for user to turn it on
+        // If bluetooth is not enabled, ask user to do so
         if (!bluetoothAdapter.isEnabled) {
             val enableBTIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(enableBTIntent, requestEnableBluetooth)
@@ -120,30 +120,30 @@ class MainActivity : AppCompatActivity() {
     fun initiateBluetoothProcess() {
         if (bluetoothAdapter.isEnabled) {
 
-            //attempt to connect to bluetooth module
+            // Attempt to connect to the device
             val tmp: BluetoothSocket?
-            mmDevice = bluetoothAdapter.getRemoteDevice(moduleMac)
+            bluetoothDevice = bluetoothAdapter.getRemoteDevice(moduleMac)
 
-            //create socket
+            // Create bluetooth socket
             try {
-                tmp = mmDevice?.createRfcommSocketToServiceRecord(myUuid)
-                mmSocket = tmp
-                mmSocket?.connect()
+                tmp = bluetoothDevice?.createRfcommSocketToServiceRecord(myUuid)
+                bluetoothSocket = tmp
+                bluetoothSocket?.connect()
 
-                Log.i("[BLUETOOTH]", "Connected to: " + mmDevice?.name)
+                Log.d("[BLUETOOTH]", "Connected to: " + bluetoothDevice?.name)
             } catch (e: IOException) {
                 try {
-                    mmSocket!!.close()
+                    bluetoothSocket!!.close()
                 } catch (c: IOException) {
                     return
                 }
             }
             Log.i("[BLUETOOTH]", "Creating handler")
-            mHandler = object : Handler(Looper.getMainLooper()) {
+            bluetoothHandler = object : Handler(Looper.getMainLooper()) {
                 override fun handleMessage(msg: Message) {
-                    //super.handleMessage(msg);
-                    if (msg.what == ConnectedThread.RESPONSE_MESSAGE) {
+                    if (msg.what == BluetoothThread.RESPONSE_MESSAGE) {
                         val txt = msg.obj as String
+                        Log.d("[BLUETOOTH]", "Received: $txt")
                         logger.log("<<", txt)
                         val data = JSONObject(txt)
 
@@ -165,9 +165,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            Log.i("[BLUETOOTH]", "Creating and running Thread")
-            btt = ConnectedThread(mmSocket!!, mHandler!!)
-            btt!!.start()
+            Log.d("[BLUETOOTH]", "Creating and running Thread")
+            bluetoothThread = BluetoothThread(bluetoothSocket!!, bluetoothHandler!!)
+            bluetoothThread!!.start()
 
             if (isBluetoothReady()) {
                 commander.realUpdateCycles(80)
@@ -176,6 +176,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun isBluetoothReady(): Boolean {
-        return mmSocket!!.isConnected && btt != null
+        return bluetoothSocket!!.isConnected && bluetoothThread != null
     }
 }

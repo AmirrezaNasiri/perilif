@@ -4,10 +4,8 @@ import android.view.View
 import android.widget.ProgressBar
 import kotlinx.coroutines.FlowPreview
 import org.json.JSONObject
-import java.util.*
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.appcompat.widget.SwitchCompat
 
 
@@ -32,15 +30,6 @@ class Commander(private var context: MainActivity) {
                 context.toast.show("Cycles are updated.")
                 debouncing = false
             }, 1_000)
-        }
-    }
-
-    @FlowPreview
-    fun toggleTurbo() {
-        if (turboSwitch().isChecked) {
-            uncheckTurboControl()
-        } else {
-            checkTurboControl()
         }
     }
 
@@ -91,7 +80,7 @@ class Commander(private var context: MainActivity) {
 
         data.put("_t", "c")
         context.logger.log(">>", data.toString())
-        context.btt?.write(data.toString().toByteArray())
+        context.bluetoothThread?.write(data.toString().toByteArray())
 
         disableLoading()
     }
@@ -126,11 +115,7 @@ class Commander(private var context: MainActivity) {
         return context.findViewById(R.id.switch_turbo)
     }
 
-    fun checkTurboControl() {
-        turboSwitch().isChecked = true
-    }
-
-    fun uncheckTurboControl() {
+    private fun uncheckTurboControl() {
         turboSwitch().isChecked = false
     }
 

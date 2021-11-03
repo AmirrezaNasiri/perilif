@@ -27,7 +27,7 @@ class Device(private var context: MainActivity) {
         val bar = context.findViewById<ProgressBar>(R.id.powerbar)
         val label = context.findViewById<TextView>(R.id.powerbar_text)
         val percent = getPercentage()
-        val caption = "$lastCurrent / $maxCurrent [%$percent]"
+        val caption = "${lastCurrent}mA / ${maxCurrent}mA [%$percent]"
 
         bar.progress = percent
         Helper.changeProgressBarColor(bar, context)

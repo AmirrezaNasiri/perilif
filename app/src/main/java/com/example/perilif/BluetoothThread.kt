@@ -6,7 +6,7 @@ import android.os.Message
 import android.util.Log
 import java.io.*
 
-class ConnectedThread(mmSocket: BluetoothSocket, uih: Handler) : Thread() {
+class BluetoothThread(mmSocket: BluetoothSocket, uih: Handler) : Thread() {
     private val mmInStream: InputStream?
     private val mmOutStream: OutputStream?
     private var uih: Handler
