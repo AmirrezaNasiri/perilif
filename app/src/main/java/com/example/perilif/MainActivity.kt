@@ -17,6 +17,11 @@ import java.io.IOException
 import java.util.*
 import org.json.JSONObject
 import androidx.appcompat.widget.SwitchCompat
+import android.animation.ObjectAnimator
+
+import android.animation.PropertyValuesHolder
+
+import android.view.View
 
 
 class MainActivity : AppCompatActivity() {
@@ -82,6 +87,17 @@ class MainActivity : AppCompatActivity() {
                 commander.disableTurbo()
             }
         }
+
+        // Animate the heart
+        val scaleDown: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(
+            findViewById<View>(R.id.heart),
+            PropertyValuesHolder.ofFloat("scaleX", 1.1f),
+            PropertyValuesHolder.ofFloat("scaleY", 1.1f)
+        )
+        scaleDown.duration = 310
+        scaleDown.repeatCount = ObjectAnimator.INFINITE
+        scaleDown.repeatMode = ObjectAnimator.REVERSE
+        scaleDown.start()
 
         //if bluetooth is not enabled then create Intent for user to turn it on
         if (!bluetoothAdapter.isEnabled) {

@@ -315,4 +315,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
+    <TextView
+        android:id="@+id/heart"
+        android:layout_width="23dp"
+        android:layout_height="22dp"
+        android:text="💜"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar"
+        app:layout_constraintStart_toStartOf="@+id/toolbar"
+        app:layout_constraintTop_toTopOf="@+id/toolbar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
