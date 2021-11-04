@@ -22,6 +22,8 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 
 import android.view.View
+import io.sentry.Sentry
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -48,7 +50,13 @@ class MainActivity : AppCompatActivity() {
 
     @FlowPreview
     override fun onCreate(savedInstanceState: Bundle?) {
+        Sentry.init { options ->
+            options.dsn = "https://e1eded8a28264beb9ebfb722c17e1468@o1060102.ingest.sentry.io/6049339"
+            options.tracesSampleRate = 1.0
+        }
+
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
