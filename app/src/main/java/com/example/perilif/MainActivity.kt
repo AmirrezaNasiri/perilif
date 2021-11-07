@@ -178,7 +178,7 @@ class MainActivity : AppCompatActivity() {
             bluetoothThread!!.start()
 
             if (isBluetoothReady()) {
-                commander.realUpdateCycles(80)
+                commander.updateCycles(40)
             }
         }
     }

@@ -15,14 +15,14 @@ class Commander(private var context: MainActivity) {
     private var debouncing = false
 
     @FlowPreview
-    fun updateCycles() {
+    fun updateCycles(cycle: Int? = null) {
         enableLoading()
         disableTurboControl()
 
         if (!debouncing) {
             debouncing = true
             Handler(Looper.getMainLooper()).postDelayed({
-                realUpdateCycles()
+                realUpdateCycles(cycle)
 
                 enablePadControls()
                 enableTurboControl()
