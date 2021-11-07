@@ -22,7 +22,7 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 
 import android.view.View
-import io.sentry.Sentry
+import com.rohitss.uceh.UCEHandler
 
 
 
@@ -50,10 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     @FlowPreview
     override fun onCreate(savedInstanceState: Bundle?) {
-        Sentry.init { options ->
-            options.dsn = "https://e1eded8a28264beb9ebfb722c17e1468@o1060102.ingest.sentry.io/6049339"
-            options.tracesSampleRate = 1.0
-        }
+        UCEHandler.Builder(this).build();
 
         super.onCreate(savedInstanceState)
 
