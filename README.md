@@ -1,5 +1,10 @@
 # Perilif: Period Pain Reliever 🌸
 
+<p align="center">
+  <img src="assets/perilif.jpg" alt="Perilif Image" width="465" height="465" />
+</p>
+
+
 Welcome to Perilif! This is a delightful, heat pad-based buddy designed to soothe menstrual cramps and IBS pain. Built with love on Arduino, it's paired with a cute Android app for easy control.
 
 **Now, a little secret 🤫:** Perilif isn't meant for big-scale, real-life production. Think of it more like a DIY bestie for those curious minds out there. Sure, there are many high-tech gadgets you can buy, but if you fancy crafting something unique for yourself or a loved one, this is a fabulous place to start. 
