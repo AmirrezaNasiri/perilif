@@ -1,7 +1,7 @@
 # Perilif: Period Pain Reliever 🌸
 
 <p align="center">
-  <img src="assets/perilif.jpg" alt="Perilif Image" width="465" height="465" />
+  <img src="assets/perilif.jpg" alt="Perilif Image" width="465" />
 </p>
 
 
@@ -65,7 +65,7 @@ Dive into the stack behind Perilif:
   <img src="assets/power-supply.jpg" width="300"/>
 </p>
 
-- **MOSEFTS:**
+- **MOSFETs:**
 
   For amplification, three MOSFETs (IRF3710) are responsible for controlling the current consumption of the heating pads by opening or closing their gate according to the received PWM signal.
 
@@ -124,7 +124,7 @@ Dive into the stack behind Perilif:
   The fritzing source file is available in the [schematic (fritzing)](schematic (fritzing)) directory. Here is the schematic. Note that those <img src="assets/heating-pad-symbol.png" alt="Perilif Image" width="20" height="20" /> indicate the heating pads.
 
 <p align="center">
-  <img src="schematic (fritzing)/schematic.png" alt="Perilif Image" width="465" height="465" />
+  <img src="schematic (fritzing)/schematic.png" alt="Perilif Image" width="465"  />
 </p>
 
 ## ⚠️ Important Notes and Known Issues
@@ -153,7 +153,7 @@ In very rare cases it's needed to use all the power provided by the power source
 This way of implementation puts more unnecessary pressure on the power source which may lead to noise generation and reduction of the power-supply life.
 
 ### Amplifiers are not implemented efficiently
-There are very considerable amount of energy wasted inside the device (in MOSEFTs), instead of efficiently using it.
+There are very considerable amount of energy wasted inside the device (in MOSFETs), instead of efficiently using it.
 
  This implementation leads to more-than-needed energy consumption to heat up the pads, heating the case and inner components, and reducing the device life.
 
